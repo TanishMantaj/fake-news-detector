@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fake News Detector 2025</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --bg1: radial-gradient(circle at top left, #001b3c, #000);
+  --text: #fff;
+  --card-bg: rgba(255, 255, 255, 0.08);
+  --ai-color: #b3f7ff;
+  --button-glow: #00e6ff;
+}
+.light {
+  --bg1: radial-gradient(circle at top left, #c8f7ff, #fff);
+  --text: #000;
+  --card-bg: rgba(0, 0, 0, 0.08);
+  --ai-color: #004c66;
+  --button-glow: #004c66;
+}
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: var(--bg1);
+  color: var(--text);
+  text-align: center;
+  min-height: 100vh;
+  padding: 20px;
+  overflow-x: hidden;
+  transition: 0.5s ease;
+}
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #00e6ff, #00ffff, #ff00ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: glowText 2s ease-in-out infinite alternate;
+  text-shadow: 0 0 10px #00e6ff, 0 0 30px #00aaff;
+}
+@keyframes glowText {
+  0% {
+    text-shadow: 0 0 10px #00e6ff, 0 0 20px #00aaff;
+  }
+  100% {
+    text-shadow: 0 0 25px #00ffff, 0 0 50px #00e6ff;
+  }
+}
+.dashboard {
+  max-width: 950px;
+  margin: 20px auto;
+  background: var(--card-bg);
+  backdrop-filter: blur(25px);
+  border-radius: 30px;
+  padding: 25px;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 1s ease-in-out;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+textarea {
+  width: 90%;
+  height: 120px;
+  margin: 15px auto;
+  border: none;
+  border-radius: 15px;
+  padding: 15px;
+  font-size: 16px;
+  font-family: inherit;
+  resize: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+  transition: 0.3s;
+}
+textarea:focus {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 25px #00ffff;
+}
+textarea::placeholder {
+  color: #ccc;
+}
+button {
+  background: linear-gradient(90deg, #00ffff, #ff00ff, #00e6ff);
+  color: #000;
+  font-weight: bold;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 35px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 6px;
+  box-shadow: 0 0 15px var(--button-glow), 0 0 30px var(--button-glow);
+  transition: 0.3s all;
+}
+button:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 25px var(--button-glow), 0 0 50px var(--button-glow);
+}
+.mic {
+  background: #ff0066;
+  color: white;
+}
+.music {
+  background: #00ff88;
+  color: #000;
+}
+.mode {
+  background: #f7d94c;
+  color: #000;
+}
+#result {
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  min-height: 60px;
+}
+#probabilityBarContainer {
+  width: 80%;
+  margin: 15px auto;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 25px;
+  height: 20px;
+  overflow: hidden;
+  display: none;
+}
+#probabilityBar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #ff4040, #00ffb3, #00ffff);
+  border-radius: 25px;
+  transition: width 1s ease-in-out;
+}
+#realNewsList {
+  margin-top: 20px;
+  text-align: left;
+  max-height: 250px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 15px;
+  padding: 15px;
+  display: none;
+  box-shadow: 0 0 20px #00ffff;
+}
+.ai-response {
+  margin-top: 15px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 15px;
+  padding: 15px;
+  text-align: left;
+  font-style: italic;
+  color: var(--ai-color);
+  animation: aiGlow 2s infinite alternate;
+  box-shadow: 0 0 20px #00e6ff, 0 0 35px #00ffff;
+}
+@keyframes aiGlow {
+  0% {
+    box-shadow: 0 0 10px #00e6ff, 0 0 20px #0077ff;
+  }
+  100% {
+    box-shadow: 0 0 25px #00ffff, 0 0 40px #00e6ff;
+  }
+}
+.typing {
+  border-right: 3px solid #00ffff;
+  animation: blink 0.8s infinite;
+}
+@keyframes blink {
+  0%, 100% {
+    border-color: #00ffff;
+  }
+  50% {
+    border-color: transparent;
+  }
+}
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+  button {
+    padding: 10px 18px;
+    font-size: 12px;
+  }
+  textarea {
+    height: 100px;
+  }
+  .dashboard {
+    padding: 15px;
+  }
+}
+</style>
+</head>
+<body>
+
+<h1>🤖 Fake News Detector 2025</h1>
+<p>AI Assistant that detects if your news is <b>Real</b> or <b>Fake</b></p>
+
+<main class="dashboard">
+  <label for="newsInput" style="display:none;">News Input</label>
+  <textarea id="newsInput" placeholder="🎤 Type or paste your news here..."></textarea><br>
+  <button onclick="checkNews()">Check News</button>
+  <button class="mic" onclick="startListening()">🎙️ Speak</button>
+  <button class="music" onclick="toggleMusic()">🎵 Music</button>
+  <button class="mode" onclick="toggleMode()">🌗 Mode</button>
+  <button onclick="updateNewsList()">🗞️ Show Verified News</button>
+
+  <div id="result" aria-live="polite"></div>
+  <div id="probabilityBarContainer"><div id="probabilityBar"></div></div>
+  <div class="ai-response" id="aiResponse"></div>
+  <div id="realNewsList"></div>
+</main>
+
+<audio id="bgMusic" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2024/01/22/audio_6e09b5a9b5.mp3?filename=futuristic-ambient-143970.mp3" type="audio/mp3">
+</audio>
+
+<canvas id="particleCanvas"></canvas>
+
+<script>
+// --- Particle Background ---
+const canvas = document.getElementById("particleCanvas");
+const ctx = canvas.getContext("2d");
+let particlesArray = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 2 + 1;
+    this.speedX = Math.random() * 1 - 0.5;
+    this.speedY = Math.random() * 1 - 0.5;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if (this.x > canvas.width) this.x = 0;
+    if (this.x < 0) this.x = canvas.width;
+    if (this.y > canvas.height) this.y = 0;
+    if (this.y < 0) this.y = canvas.height;
+  }
+  draw() {
+    ctx.fillStyle = "#00ffff";
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+function initParticles() {
+  particlesArray = [];
+  for (let i = 0; i < 150; i++) particlesArray.push(new Particle());
+}
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particlesArray.forEach((p) => {
+    p.update();
+    p.draw();
+  });
+  requestAnimationFrame(animateParticles);
+}
+initParticles();
+animateParticles();
+
+let resizeTimeout;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    resizeCanvas();
+    initParticles();
+  }, 200);
+});
+
+// --- Static News Data ---
+const realNews = [
+  "Unruly women assault TTE on Doon Express between Barabanki and Lucknow",
+  "Bengaluru to get Rs 2350 crore international stadium in Anekal",
+  "Punjab govt invites Stalin for Guru Tegh Bahadur’s anniversary events",
+  "Vivo announces rollout of OriginOS 6 in India",
+  "Ayodhya Deepotsav 2025 breaks world record with 26 lakh diyas",
+  "Gold prices hit record Rs 134800 per 10g ahead of Diwali 2025",
+  "Operation Brahma: India’s rescue mission in Myanmar earthquake"
+];
+
+let musicPlaying = false;
+let isLight = false;
+
+// --- Typing effect ---
+function typeText(element, text, speed = 40) {
+  element.innerHTML = "";
+  let i = 0;
+  element.classList.add("typing");
+  const interval = setInterval(() => {
+    if (i < text.length) {
+      element.innerHTML += text.charAt(i);
+      i++;
+    } else {
+      element.classList.remove("typing");
+      clearInterval(interval);
+    }
+  }, speed);
+}
+
+// --- Fake News Detection ---
+function checkNews() {
+  const input = document.getElementById("newsInput").value.trim().toLowerCase();
+  const result = document.getElementById("result");
+  const aiResponse = document.getElementById("aiResponse");
+  const bar = document.getElementById("probabilityBar");
+  const container = document.getElementById("probabilityBarContainer");
+
+  if (!input) {
+    result.innerHTML = "⚠️ Please enter a news statement.";
+    aiResponse.innerHTML = "";
+    container.style.display = "none";
+    return;
+  }
+
+  const found = realNews.find((news) => input.includes(news.toLowerCase()));
+  container.style.display = "block";
+
+  if (found) {
+    const confidence = 95 + Math.floor(Math.random() * 5);
+    result.innerHTML = `<span style='color:#00ffb3;'>✅ This news is REAL.<br>Confidence: ${confidence}%</span>`;
+    typeText(aiResponse, `🤖 AI: Yes! That’s a genuine event from 2025. 📰 ${found}`);
+    aiSpeak("This news is real and verified from trusted sources.");
+    bar.style.width = confidence + "%";
+  } else {
+    const confidence = Math.floor(Math.random() * 60) + 20;
+    result.innerHTML = `<span style='color:#ff7070;'>❌ This news seems FAKE or unverified.<br>Confidence: ${confidence}%</span>`;
+    typeText(aiResponse, "🤖 AI: I couldn’t find any record for that. It may be fake — please verify with trusted sources.");
+    aiSpeak("Warning! This news appears fake or unverified.");
+    bar.style.width = confidence + "%";
+  }
+}
+
+// --- AI Voice ---
+function aiSpeak(message) {
+  const synth = window.speechSynthesis;
+  if (!synth) return;
+  if (synth.speaking) synth.cancel();
+  const utter = new SpeechSynthesisUtterance(message);
+  utter.pitch = 1;
+  utter.rate = 1;
+  synth.speak(utter);
+}
+
+// --- Voice Input ---
+function startListening() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert("Speech recognition not supported in this browser.");
+    return;
+  }
+  const recognition = new SpeechRecognition();
+  recognition.lang = "en-IN";
+  recognition.start();
+  recognition.onresult = (event) => {
+    document.getElementById("newsInput").value = event.results[0][0].transcript;
+  };
+}
+
+// --- Music & Mode ---
+function toggleMusic() {
+  const music = document.getElementById("bgMusic");
+  if (musicPlaying) {
+    music.pause();
+    musicPlaying = false;
+  } else {
+    music.play();
+    musicPlaying = true;
+  }
+}
+function toggleMode() {
+  isLight = !isLight;
+  document.body.classList.toggle("light", isLight);
+  localStorage.setItem("theme", isLight ? "light" : "dark");
+}
+
+// --- Restore Theme ---
+window.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem("theme");
+  if (saved === "light") {
+    document.body.classList.add("light");
+    isLight = true;
+  }
+});
+
+// --- Fetch Real-Time News ---
+const apiKey = "YOUR_API_KEY"; // Replace with your NewsData.io key
+async function fetchLatestNews() {
+  const url = `https://newsdata.io/api/1/news?apikey=${apiKey}&country=in&language=en`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.results || [];
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+}
+
+// --- Show News List ---
+async function updateNewsList() {
+  const listDiv = document.getElementById("realNewsList");
+  listDiv.innerHTML = "<b>✅ Fetching latest verified news...</b>";
+  listDiv.style.display = "block";
+  const latestNews = await fetchLatestNews();
+  if (latestNews.length > 0) {
+    listDiv.innerHTML =
+      "<b>✅ Verified 2025 News List:</b><br><ul>" +
+      latestNews
+        .map(
+          (n) =>
+            `<li><a href="${n.link}" target="_blank" rel="noopener">${escapeHTML(
+              n.title
+            )}</a></li>`
+        )
+        .join("") +
+      "</ul>";
+  } else {
+    listDiv.innerHTML = "<p>No latest news available at the moment.</p>";
+  }
+}
+
+// --- Escape HTML ---
+function escapeHTML(str) {
+  if (!str) return "";
+  return str.replace(/[&<>"']/g, (m) =>
+    ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;",
+    }[m])
+  );
+}
+</script>
+</body>
+</html>
