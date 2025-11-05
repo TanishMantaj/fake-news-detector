@@ -1,465 +1,2899 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Fake News Detector 2025</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Detector - Advanced AI Verification Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #4cc9f0;
+            --real-news: #4ade80;
+            --fake-news: #f87171;
+            --warning: #fbbf24;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --hover-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
 
-<style>
-:root {
-  --bg1: radial-gradient(circle at top left, #001b3c, #000);
-  --text: #fff;
-  --card-bg: rgba(255, 255, 255, 0.08);
-  --ai-color: #b3f7ff;
-  --button-glow: #00e6ff;
-}
-.light {
-  --bg1: radial-gradient(circle at top left, #c8f7ff, #fff);
-  --text: #000;
-  --card-bg: rgba(0, 0, 0, 0.08);
-  --ai-color: #004c66;
-  --button-glow: #004c66;
-}
-body {
-  margin: 0;
-  font-family: "Poppins", sans-serif;
-  background: var(--bg1);
-  color: var(--text);
-  text-align: center;
-  min-height: 100vh;
-  padding: 20px;
-  overflow-x: hidden;
-  transition: 0.5s ease;
-}
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-}
-h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 10px;
-  background: linear-gradient(90deg, #00e6ff, #00ffff, #ff00ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: glowText 2s ease-in-out infinite alternate;
-  text-shadow: 0 0 10px #00e6ff, 0 0 30px #00aaff;
-}
-@keyframes glowText {
-  0% {
-    text-shadow: 0 0 10px #00e6ff, 0 0 20px #00aaff;
-  }
-  100% {
-    text-shadow: 0 0 25px #00ffff, 0 0 50px #00e6ff;
-  }
-}
-.dashboard {
-  max-width: 950px;
-  margin: 20px auto;
-  background: var(--card-bg);
-  backdrop-filter: blur(25px);
-  border-radius: 30px;
-  padding: 25px;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
-  animation: fadeIn 1s ease-in-out;
-}
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-textarea {
-  width: 90%;
-  height: 120px;
-  margin: 15px auto;
-  border: none;
-  border-radius: 15px;
-  padding: 15px;
-  font-size: 16px;
-  font-family: inherit;
-  resize: none;
-  outline: none;
-  background: rgba(255, 255, 255, 0.15);
-  color: var(--text);
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
-  transition: 0.3s;
-}
-textarea:focus {
-  background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 0 25px #00ffff;
-}
-textarea::placeholder {
-  color: #ccc;
-}
-button {
-  background: linear-gradient(90deg, #00ffff, #ff00ff, #00e6ff);
-  color: #000;
-  font-weight: bold;
-  border: none;
-  padding: 12px 25px;
-  border-radius: 35px;
-  cursor: pointer;
-  font-size: 14px;
-  margin: 6px;
-  box-shadow: 0 0 15px var(--button-glow), 0 0 30px var(--button-glow);
-  transition: 0.3s all;
-}
-button:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 25px var(--button-glow), 0 0 50px var(--button-glow);
-}
-.mic {
-  background: #ff0066;
-  color: white;
-}
-.music {
-  background: #00ff88;
-  color: #000;
-}
-.mode {
-  background: #f7d94c;
-  color: #000;
-}
-#result {
-  margin-top: 20px;
-  font-size: 16px;
-  font-weight: 600;
-  min-height: 60px;
-}
-#probabilityBarContainer {
-  width: 80%;
-  margin: 15px auto;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 25px;
-  height: 20px;
-  overflow: hidden;
-  display: none;
-}
-#probabilityBar {
-  height: 100%;
-  width: 0;
-  background: linear-gradient(90deg, #ff4040, #00ffb3, #00ffff);
-  border-radius: 25px;
-  transition: width 1s ease-in-out;
-}
-#realNewsList {
-  margin-top: 20px;
-  text-align: left;
-  max-height: 250px;
-  overflow-y: auto;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 15px;
-  padding: 15px;
-  display: none;
-  box-shadow: 0 0 20px #00ffff;
-}
-.ai-response {
-  margin-top: 15px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 15px;
-  padding: 15px;
-  text-align: left;
-  font-style: italic;
-  color: var(--ai-color);
-  animation: aiGlow 2s infinite alternate;
-  box-shadow: 0 0 20px #00e6ff, 0 0 35px #00ffff;
-}
-@keyframes aiGlow {
-  0% {
-    box-shadow: 0 0 10px #00e6ff, 0 0 20px #0077ff;
-  }
-  100% {
-    box-shadow: 0 0 25px #00ffff, 0 0 40px #00e6ff;
-  }
-}
-.typing {
-  border-right: 3px solid #00ffff;
-  animation: blink 0.8s infinite;
-}
-@keyframes blink {
-  0%, 100% {
-    border-color: #00ffff;
-  }
-  50% {
-    border-color: transparent;
-  }
-}
-@media (max-width: 768px) {
-  h1 {
-    font-size: 2rem;
-  }
-  button {
-    padding: 10px 18px;
-    font-size: 12px;
-  }
-  textarea {
-    height: 100px;
-  }
-  .dashboard {
-    padding: 15px;
-  }
-}
-</style>
+        body {
+            background: linear-gradient(135deg, #f5f7ff 0%, #f0f4ff 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Background Sound Controls */
+        .background-sound-controls {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            z-index: 100;
+            background: white;
+            border-radius: 50px;
+            padding: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            gap: 10px;
+        }
+
+        .sound-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sound-btn:hover {
+            background: var(--secondary);
+            transform: scale(1.1);
+        }
+
+        /* Author Credits */
+        .author-credits {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* AI Status Indicator */
+        #aiStatus {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        #aiStatus.connected {
+            background: var(--real-news);
+        }
+
+        #aiStatus.disconnected {
+            background: var(--fake-news);
+        }
+
+        /* Verification Popup */
+        .verification-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .verification-popup.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .verification-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 550px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: popupAppear 0.5s ease-out;
+            position: relative;
+        }
+
+        @keyframes popupAppear {
+            from { opacity: 0; transform: translateY(-50px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .verification-icon {
+            font-size: 5rem;
+            margin-bottom: 25px;
+        }
+
+        .verification-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .verification-message {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        .verification-details {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .verification-details.ai-enhanced {
+            border-left: 4px solid #667eea;
+        }
+
+        .verification-details h4 {
+            margin-bottom: 15px;
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .detail-label {
+            color: var(--gray);
+        }
+
+        .detail-value {
+            font-weight: 600;
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-popup:hover {
+            color: var(--dark);
+            transform: scale(1.1);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .action-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .action-btn.secondary {
+            background: #f8f9fa;
+            color: var(--dark);
+            border: 2px solid #e2e8f0;
+        }
+
+        .action-btn.secondary:hover {
+            background: #e9ecef;
+        }
+
+        .verification-real {
+            color: var(--real-news);
+        }
+
+        .verification-fake {
+            color: var(--fake-news);
+        }
+
+        .verification-suspicious {
+            color: var(--warning);
+        }
+
+        .ai-analysis-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-left: 10px;
+        }
+
+        /* AI Loading Animation */
+        .ai-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .ai-loading .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .ai-loading-text {
+            text-align: center;
+            color: #666;
+        }
+
+        .ai-loading-text p {
+            margin: 5px 0;
+        }
+
+        @keyframes aiPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .ai-pulse {
+            animation: aiPulse 2s infinite;
+        }
+
+        /* Login Modal */
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .login-form {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: modalAppear 0.5s ease-out;
+        }
+
+        @keyframes modalAppear {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-form h2 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .login-form p {
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .login-btn, .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover, .submit-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .social-login {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .social-btn.google {
+            color: #DB4437;
+        }
+
+        .social-btn.facebook {
+            color: #4267B2;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .signup-link {
+            color: var(--gray);
+        }
+
+        .signup-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        .logo span {
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(67, 97, 238, 0.9), rgba(114, 9, 183, 0.9)), url('https://images.unsplash.com/photo-1585829365295-ab7cd400c167?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+            margin-bottom: 3rem;
+            border-radius: 0 0 30px 30px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(247, 37, 133, 0.4);
+            cursor: pointer;
+            border: none;
+            margin: 10px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(247, 37, 133, 0.6);
+        }
+
+        .cta-button.secondary {
+            background-color: transparent;
+            border: 2px solid white;
+        }
+
+        .cta-button.secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Search Section */
+        .search-section {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            background: white;
+            border-radius: 50px;
+            overflow: hidden;
+            padding: 5px 5px 5px 25px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.2);
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            padding: 20px 10px;
+            width: 100%;
+            font-size: 1.2rem;
+            background: transparent;
+        }
+
+        .search-box button {
+            background: var(--primary);
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-box button:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        /* Quick Stats */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* News Categories */
+        .categories {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 12px 25px;
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 30px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--card-shadow);
+        }
+
+        .category-btn.active, .category-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        /* News Grid */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 2rem 0;
+        }
+
+        .news-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .news-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .news-image {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .news-content {
+            padding: 25px;
+        }
+
+        .news-category {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .news-title {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .news-excerpt {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+
+        /* AI Verification Badge */
+        .verification-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .verified-real {
+            background-color: var(--real-news);
+        }
+
+        .verified-fake {
+            background-color: var(--fake-news);
+        }
+
+        .verification-pending {
+            background-color: var(--warning);
+        }
+
+        /* URL Checker */
+        .url-checker {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 3rem 0;
+            box-shadow: var(--card-shadow);
+        }
+
+        .url-checker h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+
+        .url-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .url-input-group input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .url-input-group button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .url-input-group button:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Article Submission Form */
+        .submit-article-form {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 3rem 0;
+            box-shadow: var(--card-shadow);
+        }
+
+        .submit-article-form h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--secondary);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        /* Fact Checking Tools */
+        .tools-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 4rem 0;
+            box-shadow: var(--card-shadow);
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .tool-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .tool-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .tool-card h3 {
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        /* Educational Resources */
+        .resources-section {
+            margin: 4rem 0;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .resource-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .resource-image {
+            height: 180px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .resource-content {
+            padding: 20px;
+        }
+
+        .resource-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .resource-excerpt {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .resource-link {
+            display: inline-block;
+            color: var(--primary);
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        /* AI Features Section */
+        .ai-section {
+            background: white;
+            padding: 4rem 0;
+            margin: 4rem 0;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: var(--secondary);
+        }
+
+        .ai-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .ai-feature {
+            text-align: center;
+            padding: 30px;
+            border-radius: 16px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .ai-feature:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .ai-feature i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .ai-feature h3 {
+            margin-bottom: 15px;
+            color: var(--secondary);
+            font-size: 1.5rem;
+        }
+
+        /* Loading Animation */
+        .loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(67, 97, 238, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Sound Controls */
+        .sound-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background: white;
+            border-radius: 50px;
+            padding: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            gap: 10px;
+        }
+
+        .sound-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sound-btn:hover {
+            background: var(--secondary);
+            transform: scale(1.1);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 3rem;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 25px;
+            font-size: 1.3rem;
+            color: var(--success);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-column ul li a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #adb5bd;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                flex-direction: column;
+                border-radius: 20px;
+                padding: 15px;
+            }
+
+            .search-box input {
+                padding: 15px 0;
+            }
+
+            .search-box button {
+                border-radius: 15px;
+                padding: 15px;
+                justify-content: center;
+            }
+
+            .url-input-group, .form-row {
+                flex-direction: column;
+            }
+
+            .verification-content {
+                padding: 30px 20px;
+            }
+
+            .verification-title {
+                font-size: 2rem;
+            }
+
+            .verification-message {
+                font-size: 1.1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            #aiStatus {
+                top: 60px;
+                right: 10px;
+                font-size: 0.7rem;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Improved Sign Form */
+        .signup-form {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: modalAppear 0.5s ease-out;
+        }
+
+        .signup-form h2 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .signup-form p {
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        .password-strength {
+            height: 5px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .password-strength.weak .password-strength-bar {
+            background: #f87171;
+            width: 33%;
+        }
+
+        .password-strength.medium .password-strength-bar {
+            background: #fbbf24;
+            width: 66%;
+        }
+
+        .password-strength.strong .password-strength-bar {
+            background: #4ade80;
+            width: 100%;
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        /* News Result Overview */
+        .news-overview {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin: 2rem 0;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+        }
+
+        .overview-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+
+        .overview-result {
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .overview-result.real {
+            background-color: var(--real-news);
+            color: white;
+        }
+
+        .overview-result.fake {
+            background-color: var(--fake-news);
+            color: white;
+        }
+
+        .overview-result.suspicious {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .overview-explanation {
+            color: var(--gray);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+    </style>
 </head>
 <body>
+    <!-- Author Credits -->
+    <div class="author-credits">
+        Made by TANISH and MANTAJ
+    </div>
 
-<h1>🤖 Fake News Detector 2025</h1>
-<p>AI Assistant that detects if your news is <b>Real</b> or <b>Fake</b></p>
+    <!-- AI Status Indicator -->
+    <div id="aiStatus">
+        <i class="fas fa-robot"></i> DeepSeek AI Active
+    </div>
 
-<main class="dashboard">
-  <label for="newsInput" style="display:none;">News Input</label>
-  <textarea id="newsInput" placeholder="🎤 Type or paste your news here..."></textarea><br>
-  <button onclick="checkNews()">Check News</button>
-  <button class="mic" onclick="startListening()">🎙️ Speak</button>
-  <button class="music" onclick="toggleMusic()">🎵 Music</button>
-  <button class="mode" onclick="toggleMode()">🌗 Mode</button>
-  <button onclick="updateNewsList()">🗞️ Show Verified News</button>
+    <!-- Background Sound Controls -->
+    <div class="background-sound-controls">
+        <div class="sound-btn" id="backgroundSoundOn">
+            <i class="fas fa-play"></i>
+        </div>
+        <div class="sound-btn" id="backgroundSoundOff">
+            <i class="fas fa-pause"></i>
+        </div>
+    </div>
 
-  <div id="result" aria-live="polite"></div>
-  <div id="probabilityBarContainer"><div id="probabilityBar"></div></div>
-  <div class="ai-response" id="aiResponse"></div>
-  <div id="realNewsList"></div>
-</main>
+    <!-- Verification Popup -->
+    <div class="verification-popup" id="verificationPopup">
+        <div class="verification-content">
+            <button class="close-popup" id="closePopup">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="verification-icon" id="verificationIcon">
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <h2 class="verification-title" id="verificationTitle">Verifying News</h2>
+            <p class="verification-message" id="verificationMessage">Our AI is analyzing this content for authenticity...</p>
+            <div class="verification-details" id="verificationDetails">
+                <h4>Analysis Summary</h4>
+                <div class="detail-item">
+                    <span class="detail-label">Source Credibility</span>
+                    <span class="detail-value" id="sourceScore">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Content Analysis</span>
+                    <span class="detail-value" id="contentScore">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Factual Accuracy</span>
+                    <span class="detail-value" id="factualScore">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Bias Detection</span>
+                    <span class="detail-value" id="biasScore">-</span>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn secondary" id="learnMoreBtn">Learn More</button>
+                <button class="action-btn primary" id="closeResultBtn">Close</button>
+            </div>
+        </div>
+    </div>
 
-<audio id="bgMusic" loop>
-  <source src="https://cdn.pixabay.com/download/audio/2024/01/22/audio_6e09b5a9b5.mp3?filename=futuristic-ambient-143970.mp3" type="audio/mp3">
-</audio>
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-form">
+            <h2>Welcome to Fake News Detector</h2>
+            <p>Sign in to access AI-powered news verification</p>
+            
+            <div class="social-login">
+                <button class="social-btn google" id="googleLogin">
+                    <i class="fab fa-google"></i> Google
+                </button>
+                <button class="social-btn facebook" id="facebookLogin">
+                    <i class="fab fa-facebook-f"></i> Facebook
+                </button>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+                <div class="password-strength" id="passwordStrength">
+                    <div class="password-strength-bar"></div>
+                </div>
+            </div>
+            
+            <div class="form-footer">
+                <div class="remember-me">
+                    <input type="checkbox" id="rememberMe">
+                    <label for="rememberMe">Remember me</label>
+                </div>
+                <a href="#" class="forgot-password">Forgot password?</a>
+            </div>
+            
+            <button class="login-btn" id="loginButton">Sign In</button>
+            
+            <p class="signup-link">Don't have an account? <a href="#" id="showSignup">Sign up</a></p>
+        </div>
+    </div>
 
-<canvas id="particleCanvas"></canvas>
+    <!-- Signup Modal -->
+    <div class="login-modal" id="signupModal" style="display: none;">
+        <div class="signup-form">
+            <h2>Create an Account</h2>
+            <p>Join our community for better news verification</p>
+            
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" placeholder="Enter your full name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="signupEmail">Email</label>
+                <input type="email" id="signupEmail" placeholder="Enter your email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="signupPassword">Password</label>
+                <input type="password" id="signupPassword" placeholder="Create a strong password" required>
+                <div class="password-strength" id="signupPasswordStrength">
+                    <div class="password-strength-bar"></div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+            </div>
+            
+            <div class="form-footer">
+                <div class="remember-me">
+                    <input type="checkbox" id="agreeTerms" required>
+                    <label for="agreeTerms">I agree to the <a href="#">Terms & Conditions</a></label>
+                </div>
+            </div>
+            
+            <button class="login-btn" id="signupButton">Create Account</button>
+            
+            <p class="signup-link">Already have an account? <a href="#" id="showLogin">Sign in</a></p>
+        </div>
+    </div>
 
-<script>
-// --- Particle Background ---
-const canvas = document.getElementById("particleCanvas");
-const ctx = canvas.getContext("2d");
-let particlesArray = [];
+    <!-- Header -->
+    <header class="hidden" id="mainHeader">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Fake News Detector</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#" class="active">Home</a>
+                    <a href="#">Verify</a>
+                    <a href="#">Resources</a>
+                    <a href="#">Tools</a>
+                    <a href="#">Submit Article</a>
+                </div>
+                <div class="user-actions">
+                    <div class="user-profile" id="userProfile">
+                        <div class="user-avatar">TA</div>
+                        <span>Tanish</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resizeCanvas();
+    <!-- Hero Section -->
+    <section class="hero hidden" id="mainHero">
+        <div class="container">
+            <h1>AI-Powered Fake News Detection</h1>
+            <p>Verify news authenticity with our advanced AI algorithms. Stay informed with accurate information.</p>
+            
+            <!-- Search Section -->
+            <div class="search-section">
+                <div class="search-container">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search for news to verify..." id="searchInput">
+                        <button id="searchButton">
+                            <i class="fas fa-search"></i> Verify News
+                        </button>
+                    </div>
+                    <div>
+                        <button class="cta-button" id="demoButton">Try AI Detection Demo</button>
+                        <button class="cta-button secondary" id="submitArticleBtn">Submit Article</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-class Particle {
-  constructor() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
-    this.size = Math.random() * 2 + 1;
-    this.speedX = Math.random() * 1 - 0.5;
-    this.speedY = Math.random() * 1 - 0.5;
-  }
-  update() {
-    this.x += this.speedX;
-    this.y += this.speedY;
-    if (this.x > canvas.width) this.x = 0;
-    if (this.x < 0) this.x = canvas.width;
-    if (this.y > canvas.height) this.y = 0;
-    if (this.y < 0) this.y = canvas.height;
-  }
-  draw() {
-    ctx.fillStyle = "#00ffff";
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
-function initParticles() {
-  particlesArray = [];
-  for (let i = 0; i < 150; i++) particlesArray.push(new Particle());
-}
-function animateParticles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particlesArray.forEach((p) => {
-    p.update();
-    p.draw();
-  });
-  requestAnimationFrame(animateParticles);
-}
-initParticles();
-animateParticles();
+    <!-- Main Content -->
+    <main class="container hidden" id="mainContent">
+        <!-- News Result Overview -->
+        <div class="news-overview hidden" id="newsOverview">
+            <h2 class="overview-title">News Verification Result</h2>
+            <div class="overview-result" id="overviewResult">REAL NEWS</div>
+            <p class="overview-explanation" id="overviewExplanation">This news appears to be accurate and trustworthy based on our AI analysis.</p>
+        </div>
 
-let resizeTimeout;
-window.addEventListener("resize", () => {
-  clearTimeout(resizeTimeout);
-  resizeTimeout = setTimeout(() => {
-    resizeCanvas();
-    initParticles();
-  }, 200);
-});
+        <!-- Quick Stats -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-newspaper"></i>
+                </div>
+                <div class="stat-number" id="articlesScanned">12,847</div>
+                <div class="stat-label">Articles Scanned</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="stat-number" id="fakeDetected">1,243</div>
+                <div class="stat-label">Fake News Detected</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-number" id="accuracyRate">94.7%</div>
+                <div class="stat-label">Detection Accuracy</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-number" id="activeUsers">8,521</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+        </div>
 
-// --- Static News Data ---
-const realNews = [
-  "Unruly women assault TTE on Doon Express between Barabanki and Lucknow",
-  "Bengaluru to get Rs 2350 crore international stadium in Anekal",
-  "Punjab govt invites Stalin for Guru Tegh Bahadur’s anniversary events",
-  "Vivo announces rollout of OriginOS 6 in India",
-  "Ayodhya Deepotsav 2025 breaks world record with 26 lakh diyas",
-  "Gold prices hit record Rs 134800 per 10g ahead of Diwali 2025",
-  "Operation Brahma: India’s rescue mission in Myanmar earthquake"
-];
+        <!-- URL Checker -->
+        <div class="url-checker">
+            <h2>Verify News Website URL</h2>
+            <div class="url-input-group">
+                <input type="text" id="urlInput" placeholder="Paste news article URL here...">
+                <button id="checkUrlButton">Check URL</button>
+            </div>
+        </div>
 
-let musicPlaying = false;
-let isLight = false;
+        <!-- Article Submission Form -->
+        <div class="submit-article-form" id="articleSubmissionForm">
+            <h2>Submit Article for Verification</h2>
+            <form id="articleForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="articleTitle">Article Title</label>
+                        <input type="text" id="articleTitle" placeholder="Enter article title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="articleCategory">Category</label>
+                        <select id="articleCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="technology">Technology</option>
+                            <option value="politics">Politics</option>
+                            <option value="health">Health</option>
+                            <option value="sports">Sports</option>
+                            <option value="entertainment">Entertainment</option>
+                            <option value="business">Business</option>
+                            <option value="science">Science</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="articleContent">Article Content</label>
+                    <textarea id="articleContent" placeholder="Paste the full article content here..." required></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="articleSource">Source URL</label>
+                        <input type="url" id="articleSource" placeholder="Original article URL (if any)">
+                    </div>
+                    <div class="form-group">
+                        <label for="articleAuthor">Author Name</label>
+                        <input type="text" id="articleAuthor" placeholder="Article author name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="articleImage">Image URL (Optional)</label>
+                    <input type="url" id="articleImage" placeholder="Paste image URL for the article">
+                </div>
+                <button type="submit" class="submit-btn">Submit for Verification</button>
+            </form>
+        </div>
 
-// --- Typing effect ---
-function typeText(element, text, speed = 40) {
-  element.innerHTML = "";
-  let i = 0;
-  element.classList.add("typing");
-  const interval = setInterval(() => {
-    if (i < text.length) {
-      element.innerHTML += text.charAt(i);
-      i++;
-    } else {
-      element.classList.remove("typing");
-      clearInterval(interval);
+        <!-- News Categories -->
+        <div class="categories">
+            <button class="category-btn active" data-category="all">All News</button>
+            <button class="category-btn" data-category="local">Local</button>
+            <button class="category-btn" data-category="national">National</button>
+            <button class="category-btn" data-category="international">International</button>
+            <button class="category-btn" data-category="technology">Technology</button>
+            <button class="category-btn" data-category="sports">Sports</button>
+            <button class="category-btn" data-category="entertainment">Entertainment</button>
+            <button class="category-btn" data-category="health">Health</button>
+        </div>
+
+        <!-- News Grid -->
+        <div class="news-grid" id="newsContainer">
+            <!-- News cards will be dynamically loaded here -->
+            <div class="loader">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <!-- Fact Checking Tools -->
+        <section class="tools-section">
+            <h2 class="section-title">Fact-Checking Tools</h2>
+            <div class="tools-grid">
+                <div class="tool-card" id="imageVerificationTool">
+                    <div class="tool-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h3>Image Verification</h3>
+                    <p>Check if images have been manipulated or taken out of context</p>
+                </div>
+                <div class="tool-card" id="deepfakeDetector">
+                    <div class="tool-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h3>Deepfake Detection</h3>
+                    <p>Identify AI-generated videos and synthetic media</p>
+                </div>
+                <div class="tool-card" id="sourceChecker">
+                    <div class="tool-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Source Analysis</h3>
+                    <p>Evaluate the credibility of news sources and authors</p>
+                </div>
+                <div class="tool-card" id="biasDetector">
+                    <div class="tool-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h3>Bias Detection</h3>
+                    <p>Analyze political bias and sensationalism in content</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Educational Resources -->
+        <section class="resources-section">
+            <h2 class="section-title">Educational Resources</h2>
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <img src="https://images.unsplash.com/photo-1589256469067-ea99122bbdc4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Spot Fake News" class="resource-image">
+                    <div class="resource-content">
+                        <h3 class="resource-title">How to Spot Fake News</h3>
+                        <p class="resource-excerpt">Learn the telltale signs of misinformation and develop critical thinking skills.</p>
+                        <a href="#" class="resource-link">Read Guide →</a>
+                    </div>
+                </div>
+                <div class="resource-card">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Media Literacy" class="resource-image">
+                    <div class="resource-content">
+                        <h3 class="resource-title">Media Literacy Course</h3>
+                        <p class="resource-excerpt">Free online course to improve your ability to evaluate information sources.</p>
+                        <a href="#" class="resource-link">Enroll Now →</a>
+                    </div>
+                </div>
+                <div class="resource-card">
+                    <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Fact Checking" class="resource-image">
+                    <div class="resource-content">
+                        <h3 class="resource-title">Fact-Checking Handbook</h3>
+                        <p class="resource-excerpt">Comprehensive guide to verifying information using reliable methods.</p>
+                        <a href="#" class="resource-link">Download →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Features Section -->
+        <section class="ai-section">
+            <h2 class="section-title">AI-Powered Verification Features</h2>
+            <div class="ai-features">
+                <div class="ai-feature">
+                    <i class="fas fa-robot"></i>
+                    <h3>Smart Detection</h3>
+                    <p>Our AI analyzes content patterns to identify potential misinformation.</p>
+                </div>
+                <div class="ai-feature">
+                    <i class="fas fa-globe-americas"></i>
+                    <h3>Source Verification</h3>
+                    <p>Cross-references information with trusted sources worldwide.</p>
+                </div>
+                <div class="ai-feature">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Real-Time Analysis</h3>
+                    <p>Instant verification of breaking news as it happens.</p>
+                </div>
+                <div class="ai-feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Fake News Detection</h3>
+                    <p>Advanced algorithms flag potentially misleading information.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Sound Controls -->
+    <div class="sound-controls">
+        <div class="sound-btn" id="soundOn">
+            <i class="fas fa-volume-up"></i>
+        </div>
+        <div class="sound-btn" id="soundOff">
+            <i class="fas fa-volume-mute"></i>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="hidden" id="mainFooter">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Fake News Detector</h3>
+                    <p>Your trusted AI-powered platform for verifying news authenticity and combating misinformation.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Verify News</a></li>
+                        <li><a href="#">Educational Resources</a></li>
+                        <li><a href="#">Fact-Checking Tools</a></li>
+                        <li><a href="#">Submit Article</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>News Categories</h3>
+                    <ul>
+                        <li><a href="#">Local News</a></li>
+                        <li><a href="#">National News</a></li>
+                        <li><a href="#">International News</a></li>
+                        <li><a href="#">Technology</a></li>
+                        <li><a href="#">Sports</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Subscribe</h3>
+                    <p>Get verified news delivered to your inbox daily.</p>
+                    <div class="search-box" style="margin-top: 15px; border-radius: 10px;">
+                        <input type="email" placeholder="Your email address" id="emailInput">
+                        <button id="subscribeButton" style="border-radius: 8px;"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Fake News Detector. Created by Tanish and Mantaj. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Sound Elements -->
+    <audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/241/241-preview.mp3"></audio>
+    <audio id="successSound" src="https://assets.mixkit.co/active_storage/sfx/257/257-preview.mp3"></audio>
+    <audio id="warningSound" src="https://assets.mixkit.co/active_storage/sfx/249/249-preview.mp3"></audio>
+    <audio id="realNewsSound" src="https://assets.mixkit.co/active_storage/sfx/270/270-preview.mp3"></audio>
+    <audio id="fakeNewsSound" src="https://assets.mixkit.co/active_storage/sfx/266/266-preview.mp3"></audio>
+    <audio id="verificationSound" src="https://assets.mixkit.co/active_storage/sfx/257/257-preview.mp3"></audio>
+    <audio id="backgroundMusic" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="aiVoiceReal" src="https://assets.mixkit.co/voice/preview/mixkit-robot-announcement-566.mp3"></audio>
+    <audio id="aiVoiceFake" src="https://assets.mixkit.co/voice/preview/mixkit-alert-quick-chime-766.mp3"></audio>
+    <audio id="aiVoiceSuspicious" src="https://assets.mixkit.co/voice/preview/mixkit-sci-fi-voice-warning-alert-896.mp3"></audio>
+
+    <!-- DEEPSEEK AI INTEGRATION -->
+    <script>
+    // DeepSeek API Integration
+    class DeepSeekFakeNewsDetector {
+        constructor() {
+            this.apiKey = 'YOUR_DEEPSEEK_API_KEY'; // Replace with your actual API key
+            this.apiUrl = 'https://api.deepseek.com/v1/chat/completions';
+            this.isConnected = false;
+            this.testMode = true; // Set to false when you have a real API key
+        }
+
+        // Initialize the connection
+        async initialize() {
+            if (this.testMode) {
+                console.log('DeepSeek AI running in test mode');
+                this.isConnected = true;
+                document.getElementById('aiStatus').classList.add('connected');
+                return true;
+            }
+
+            try {
+                const response = await fetch(this.apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'deepseek-chat',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: 'You are a fake news detection expert. Analyze news content and determine if it\'s real or fake based on credibility indicators, source reliability, factual accuracy, and common misinformation patterns.'
+                            },
+                            {
+                                role: 'user',
+                                content: 'Test connection'
+                            }
+                        ],
+                        max_tokens: 50
+                    })
+                });
+
+                if (response.ok) {
+                    this.isConnected = true;
+                    document.getElementById('aiStatus').classList.add('connected');
+                    console.log('DeepSeek AI connected successfully');
+                    return true;
+                } else {
+                    console.error('DeepSeek API connection failed');
+                    document.getElementById('aiStatus').classList.add('disconnected');
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error connecting to DeepSeek API:', error);
+                document.getElementById('aiStatus').classList.add('disconnected');
+                return false;
+            }
+        }
+
+        // Analyze news content using DeepSeek AI
+        async analyzeNews(title, content, source = '') {
+            if (!this.isConnected) {
+                await this.initialize();
+            }
+
+            // Show AI analysis in progress
+            this.showAIAnalysisProgress();
+
+            if (this.testMode) {
+                // Simulate API response for demo purposes
+                return this.simulateAnalysis(title, content, source);
+            }
+
+            try {
+                const prompt = this.createAnalysisPrompt(title, content, source);
+                
+                const response = await fetch(this.apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'deepseek-chat',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: `You are an expert fake news detector. Analyze the provided news content and return a JSON response with this exact structure:
+                                {
+                                    "verdict": "real|fake|suspicious",
+                                    "confidence": 0-100,
+                                    "reasoning": "Detailed explanation of the analysis",
+                                    "indicators": {
+                                        "source_credibility": "high|medium|low",
+                                        "content_quality": "high|medium|low",
+                                        "factual_accuracy": "high|medium|low",
+                                        "bias_level": "high|medium|low"
+                                    },
+                                    "key_findings": ["array", "of", "key", "points"]
+                                }
+                                
+                                Consider these factors:
+                                - Source reputation and history
+                                - Emotional language and sensationalism
+                                - Factual claims and verifiability
+                                - Logical consistency
+                                - Common fake news patterns
+                                - Cross-reference with known facts`
+                            },
+                            {
+                                role: 'user',
+                                content: prompt
+                            }
+                        ],
+                        max_tokens: 1000,
+                        temperature: 0.3
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return this.parseAIResponse(data);
+                
+            } catch (error) {
+                console.error('DeepSeek API analysis error:', error);
+                return this.simulateAnalysis(title, content, source);
+            }
+        }
+
+        // Create analysis prompt for DeepSeek
+        createAnalysisPrompt(title, content, source) {
+            return `Please analyze this news content for authenticity:
+
+NEWS TITLE: ${title}
+
+NEWS CONTENT: ${content}
+
+SOURCE: ${source || 'Not specified'}
+
+Please provide a thorough analysis focusing on:
+1. Source credibility assessment
+2. Content quality and factual accuracy
+3. Potential bias or sensationalism
+4. Comparison with known factual information
+5. Overall authenticity verdict
+
+Return your analysis in the specified JSON format.`;
+        }
+
+        // Parse AI response
+        parseAIResponse(data) {
+            try {
+                const content = data.choices[0].message.content;
+                const parsed = JSON.parse(content);
+                
+                return {
+                    result: parsed.verdict,
+                    confidence: parsed.confidence,
+                    details: parsed.indicators,
+                    reasoning: parsed.reasoning,
+                    findings: parsed.key_findings,
+                    isAI: true
+                };
+            } catch (error) {
+                console.error('Error parsing AI response:', error);
+                return this.simulateAnalysis();
+            }
+        }
+
+        // Simulate AI analysis for demo purposes
+        simulateAnalysis(title, content, source) {
+            // Advanced simulation based on content analysis
+            const text = (title + ' ' + content).toLowerCase();
+            
+            // Enhanced detection logic
+            const fakeIndicators = [
+                'miracle cure', 'instant results', 'they don\'t want you to know',
+                'secret that doctors hate', 'one weird trick', 'big pharma is hiding',
+                'lose weight overnight', 'earn money fast', 'guaranteed results',
+                'click here to find out', 'you won\'t believe what happened next',
+                'shocking discovery', 'doctors are baffled', 'government is hiding',
+                'mainstream media won\'t tell you', 'breaking exclusive', 'urgent warning',
+                'this will change everything', 'secret method', 'hidden truth',
+                'they don\'t want you to see this', 'viral secret', 'forbidden knowledge'
+            ];
+
+            const realIndicators = [
+                'according to research', 'study published', 'official report',
+                'peer-reviewed', 'scientific evidence', 'data shows',
+                'experts confirm', 'verified sources', 'fact-checked',
+                'multiple sources confirm', 'official statement', 'press release',
+                'clinical trial', 'research findings', 'evidence-based'
+            ];
+
+            let fakeScore = 0;
+            let realScore = 0;
+
+            // Analyze content
+            fakeIndicators.forEach(indicator => {
+                const regex = new RegExp(indicator, 'gi');
+                const matches = text.match(regex);
+                if (matches) fakeScore += matches.length * 2;
+            });
+
+            realIndicators.forEach(indicator => {
+                const regex = new RegExp(indicator, 'gi');
+                const matches = text.match(regex);
+                if (matches) realScore += matches.length * 2;
+            });
+
+            // Additional analysis factors
+            if ((text.match(/!/g) || []).length > 3) fakeScore += 2;
+            if ((text.match(/\?/g) || []).length > 5) fakeScore += 1;
+            
+            const allCapsWords = text.split(' ').filter(word => word === word.toUpperCase() && word.length > 3);
+            if (allCapsWords.length > 2) fakeScore += 2;
+
+            // Source analysis
+            const trustedSources = ['bbc', 'cnn', 'reuters', 'associated press', 'the new york times'];
+            const suspiciousSources = ['unknown blog', 'unverified', 'anonymous', 'secret source'];
+            
+            let sourceCredibility = 'medium';
+            if (trustedSources.some(s => source.toLowerCase().includes(s))) {
+                realScore += 5;
+                sourceCredibility = 'high';
+            } else if (suspiciousSources.some(s => source.toLowerCase().includes(s))) {
+                fakeScore += 5;
+                sourceCredibility = 'low';
+            }
+
+            // Determine result
+            let result, confidence;
+            if (realScore > fakeScore + 10) {
+                result = 'real';
+                confidence = Math.min(95, 70 + (realScore - fakeScore));
+            } else if (fakeScore > realScore + 10) {
+                result = 'fake';
+                confidence = Math.min(95, 70 + (fakeScore - realScore));
+            } else {
+                result = 'suspicious';
+                confidence = 50 + Math.abs(realScore - fakeScore);
+            }
+
+            // Generate reasoning
+            const reasoning = this.generateReasoning(result, confidence, fakeScore, realScore, sourceCredibility);
+            const findings = this.generateFindings(text, fakeScore, realScore);
+
+            return {
+                result: result,
+                confidence: Math.round(confidence),
+                details: {
+                    source: this.capitalizeFirst(sourceCredibility),
+                    content: realScore > fakeScore ? 'Reliable' : 'Questionable',
+                    factual: realScore > fakeScore ? 'High' : fakeScore > realScore ? 'Low' : 'Medium',
+                    bias: fakeScore > 5 ? 'High' : realScore > 5 ? 'Low' : 'Medium'
+                },
+                reasoning: reasoning,
+                findings: findings,
+                isAI: true
+            };
+        }
+
+        generateReasoning(result, confidence, fakeScore, realScore, sourceCredibility) {
+            const baseReasoning = {
+                real: `This content appears credible with ${confidence}% confidence. `,
+                fake: `This content shows strong indicators of misinformation with ${confidence}% confidence. `,
+                suspicious: `This content requires further verification with ${confidence}% confidence. `
+            };
+
+            let reasoning = baseReasoning[result];
+            
+            if (sourceCredibility === 'high') {
+                reasoning += 'The source appears reputable. ';
+            } else if (sourceCredibility === 'low') {
+                reasoning += 'The source raises credibility concerns. ';
+            }
+
+            if (fakeScore > realScore) {
+                reasoning += `Found ${fakeScore} potential misinformation indicators. `;
+            } else {
+                reasoning += `Found ${realScore} credibility indicators. `;
+            }
+
+            reasoning += 'Always verify important information through multiple trusted sources.';
+
+            return reasoning;
+        }
+
+        generateFindings(text, fakeScore, realScore) {
+            const findings = [];
+            
+            if (fakeScore > 0) {
+                findings.push(`Detected ${fakeScore} potential fake news indicators`);
+            }
+            
+            if (realScore > 0) {
+                findings.push(`Found ${realScore} credibility markers`);
+            }
+            
+            if ((text.match(/!/g) || []).length > 3) {
+                findings.push('Excessive use of sensational punctuation');
+            }
+            
+            const allCapsWords = text.split(' ').filter(word => word === word.toUpperCase() && word.length > 3);
+            if (allCapsWords.length > 2) {
+                findings.push('Overuse of capitalization for emphasis');
+            }
+            
+            if (text.includes('click here') || text.includes('find out more')) {
+                findings.push('Clickbait language detected');
+            }
+
+            return findings;
+        }
+
+        capitalizeFirst(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        showAIAnalysisProgress() {
+            // Update verification popup to show AI analysis
+            const verificationMessage = document.getElementById('verificationMessage');
+            if (verificationMessage) {
+                verificationMessage.innerHTML = `
+                    <div class="ai-loading">
+                        <div class="spinner"></div>
+                        <div class="ai-loading-text">
+                            <p>🤖 DeepSeek AI is analyzing this content...</p>
+                            <p style="font-size: 0.9em; color: #666;">Using advanced AI to detect misinformation patterns</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
     }
-  }, speed);
-}
 
-// --- Fake News Detection ---
-function checkNews() {
-  const input = document.getElementById("newsInput").value.trim().toLowerCase();
-  const result = document.getElementById("result");
-  const aiResponse = document.getElementById("aiResponse");
-  const bar = document.getElementById("probabilityBar");
-  const container = document.getElementById("probabilityBarContainer");
+    // Initialize DeepSeek AI when the page loads
+    let deepSeekAI;
 
-  if (!input) {
-    result.innerHTML = "⚠️ Please enter a news statement.";
-    aiResponse.innerHTML = "";
-    container.style.display = "none";
-    return;
-  }
+    // Enhanced analysis function that uses DeepSeek AI
+    async function analyzeWithDeepSeek(title, content, source = '') {
+        if (!deepSeekAI) {
+            deepSeekAI = new DeepSeekFakeNewsDetector();
+            await deepSeekAI.initialize();
+        }
+        
+        return await deepSeekAI.analyzeNews(title, content, source);
+    }
 
-  const found = realNews.find((news) => input.includes(news.toLowerCase()));
-  container.style.display = "block";
+    // Enhanced verification popup for AI results
+    function showEnhancedVerificationPopup(analysis) {
+        const verificationPopup = document.getElementById('verificationPopup');
+        const verificationIcon = document.getElementById('verificationIcon');
+        const verificationTitle = document.getElementById('verificationTitle');
+        const verificationMessage = document.getElementById('verificationMessage');
+        const verificationDetails = document.getElementById('verificationDetails');
+        const sourceScore = document.getElementById('sourceScore');
+        const contentScore = document.getElementById('contentScore');
+        const factualScore = document.getElementById('factualScore');
+        const biasScore = document.getElementById('biasScore');
 
-  if (found) {
-    const confidence = 95 + Math.floor(Math.random() * 5);
-    result.innerHTML = `<span style='color:#00ffb3;'>✅ This news is REAL.<br>Confidence: ${confidence}%</span>`;
-    typeText(aiResponse, `🤖 AI: Yes! That’s a genuine event from 2025. 📰 ${found}`);
-    aiSpeak("This news is real and verified from trusted sources.");
-    bar.style.width = confidence + "%";
-  } else {
-    const confidence = Math.floor(Math.random() * 60) + 20;
-    result.innerHTML = `<span style='color:#ff7070;'>❌ This news seems FAKE or unverified.<br>Confidence: ${confidence}%</span>`;
-    typeText(aiResponse, "🤖 AI: I couldn’t find any record for that. It may be fake — please verify with trusted sources.");
-    aiSpeak("Warning! This news appears fake or unverified.");
-    bar.style.width = confidence + "%";
-  }
-}
+        // Reset to initial state
+        verificationPopup.classList.remove('show');
+        verificationIcon.innerHTML = '<i class="fas fa-robot"></i>';
+        verificationTitle.textContent = 'AI Analysis Complete';
+        verificationTitle.className = 'verification-title';
+        verificationDetails.classList.add('ai-enhanced');
+        
+        // Show popup
+        setTimeout(() => {
+            verificationPopup.classList.add('show');
+            
+            // Set final result with AI branding
+            if (analysis.result === 'real') {
+                verificationIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                verificationTitle.textContent = 'REAL NEWS';
+                verificationTitle.className = 'verification-title verification-real';
+                verificationMessage.innerHTML = `
+                    <p>✅ <strong>AI Verified Real</strong> <span class="ai-analysis-badge"><i class="fas fa-robot"></i> DeepSeek AI</span></p>
+                    <p>${analysis.reasoning}</p>
+                    <div style="background: #f0f9ff; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                        <p style="margin: 0; font-size: 0.9em;"><strong>🤖 AI Confidence:</strong> ${analysis.confidence}%</p>
+                    </div>
+                `;
+                
+                if (soundEnabled) {
+                    realNewsSound.play().catch(e => console.log("Real news sound play failed:", e));
+                    setTimeout(() => {
+                        aiVoiceReal.play().catch(e => console.log("AI voice real play failed:", e));
+                    }, 500);
+                }
+            } else if (analysis.result === 'fake') {
+                verificationIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                verificationTitle.textContent = 'FAKE NEWS';
+                verificationTitle.className = 'verification-title verification-fake';
+                verificationMessage.innerHTML = `
+                    <p>❌ <strong>AI Detected Fake News</strong> <span class="ai-analysis-badge"><i class="fas fa-robot"></i> DeepSeek AI</span></p>
+                    <p>${analysis.reasoning}</p>
+                    <div style="background: #fef2f2; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                        <p style="margin: 0; font-size: 0.9em;"><strong>🤖 AI Confidence:</strong> ${analysis.confidence}%</p>
+                    </div>
+                `;
+                
+                if (soundEnabled) {
+                    fakeNewsSound.play().catch(e => console.log("Fake news sound play failed:", e));
+                    setTimeout(() => {
+                        aiVoiceFake.play().catch(e => console.log("AI voice fake play failed:", e));
+                    }, 500);
+                }
+            } else {
+                verificationIcon.innerHTML = '<i class="fas fa-question-circle"></i>';
+                verificationTitle.textContent = 'SUSPICIOUS CONTENT';
+                verificationTitle.className = 'verification-title verification-suspicious';
+                verificationMessage.innerHTML = `
+                    <p>⚠️ <strong>AI Flags Suspicious Content</strong> <span class="ai-analysis-badge"><i class="fas fa-robot"></i> DeepSeek AI</span></p>
+                    <p>${analysis.reasoning}</p>
+                    <div style="background: #fffbeb; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                        <p style="margin: 0; font-size: 0.9em;"><strong>🤖 AI Confidence:</strong> ${analysis.confidence}%</p>
+                    </div>
+                `;
+                
+                if (soundEnabled) {
+                    warningSound.play().catch(e => console.log("Warning sound play failed:", e));
+                    setTimeout(() => {
+                        aiVoiceSuspicious.play().catch(e => console.log("AI voice suspicious play failed:", e));
+                    }, 500);
+                }
+            }
+            
+            // Update details
+            sourceScore.textContent = analysis.details.source;
+            contentScore.textContent = analysis.details.content;
+            factualScore.textContent = analysis.details.factual;
+            biasScore.textContent = analysis.details.bias;
 
-// --- AI Voice ---
-function aiSpeak(message) {
-  const synth = window.speechSynthesis;
-  if (!synth) return;
-  if (synth.speaking) synth.cancel();
-  const utter = new SpeechSynthesisUtterance(message);
-  utter.pitch = 1;
-  utter.rate = 1;
-  synth.speak(utter);
-}
+            // Show news overview
+            showNewsOverview(analysis.result, analysis.details);
+        }, 100);
+    }
 
-// --- Voice Input ---
-function startListening() {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    alert("Speech recognition not supported in this browser.");
-    return;
-  }
-  const recognition = new SpeechRecognition();
-  recognition.lang = "en-IN";
-  recognition.start();
-  recognition.onresult = (event) => {
-    document.getElementById("newsInput").value = event.results[0][0].transcript;
-  };
-}
+    // Initialize the DeepSeek AI integration
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize DeepSeek AI
+        deepSeekAI = new DeepSeekFakeNewsDetector();
+        deepSeekAI.initialize().then(success => {
+            if (success) {
+                console.log('Fake News Detector with DeepSeek AI is ready!');
+            }
+        });
 
-// --- Music & Mode ---
-function toggleMusic() {
-  const music = document.getElementById("bgMusic");
-  if (musicPlaying) {
-    music.pause();
-    musicPlaying = false;
-  } else {
-    music.play();
-    musicPlaying = true;
-  }
-}
-function toggleMode() {
-  isLight = !isLight;
-  document.body.classList.toggle("light", isLight);
-  localStorage.setItem("theme", isLight ? "light" : "dark");
-}
+        // Replace the original detectFakeNews function with AI-powered version
+        window.detectFakeNews = async function(title, content, source) {
+            return await analyzeWithDeepSeek(title, content, source);
+        };
 
-// --- Restore Theme ---
-window.addEventListener("DOMContentLoaded", () => {
-  const saved = localStorage.getItem("theme");
-  if (saved === "light") {
-    document.body.classList.add("light");
-    isLight = true;
-  }
-});
+        // Update the verification popup to use AI results
+        window.showVerificationPopup = async function(result, details) {
+            // If it's already an AI analysis result (from direct call)
+            if (result.isAI) {
+                showEnhancedVerificationPopup(result);
+            } else {
+                // Convert legacy format to AI format
+                const aiAnalysis = {
+                    result: result,
+                    confidence: 85, // Default confidence
+                    details: details,
+                    reasoning: "Our AI analysis has completed verification of this content.",
+                    findings: ["Analysis completed using advanced AI algorithms"],
+                    isAI: true
+                };
+                showEnhancedVerificationPopup(aiAnalysis);
+            }
+        };
+    });
+    </script>
 
-// --- Fetch Real-Time News ---
-const apiKey = "YOUR_API_KEY"; // Replace with your NewsData.io key
-async function fetchLatestNews() {
-  const url = `https://newsdata.io/api/1/news?apikey=${apiKey}&country=in&language=en`;
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-    return data.results || [];
-  } catch (e) {
-    console.error(e);
-    return [];
-  }
-}
+    <!-- ORIGINAL WEBSITE JAVASCRIPT -->
+    <script>
+        // Sound management
+        let soundEnabled = true;
+        let backgroundMusicEnabled = false;
+        const clickSound = document.getElementById('clickSound');
+        const successSound = document.getElementById('successSound');
+        const warningSound = document.getElementById('warningSound');
+        const realNewsSound = document.getElementById('realNewsSound');
+        const fakeNewsSound = document.getElementById('fakeNewsSound');
+        const verificationSound = document.getElementById('verificationSound');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const aiVoiceReal = document.getElementById('aiVoiceReal');
+        const aiVoiceFake = document.getElementById('aiVoiceFake');
+        const aiVoiceSuspicious = document.getElementById('aiVoiceSuspicious');
+        
+        // Set volume for all sounds
+        [clickSound, successSound, warningSound, realNewsSound, fakeNewsSound, verificationSound, 
+         backgroundMusic, aiVoiceReal, aiVoiceFake, aiVoiceSuspicious].forEach(sound => {
+            if (sound) sound.volume = 0.5;
+        });
+        
+        document.getElementById('soundOn').addEventListener('click', function() {
+            soundEnabled = true;
+            if (soundEnabled) {
+                successSound.play().catch(e => console.log("Sound play failed:", e));
+            }
+        });
+        
+        document.getElementById('soundOff').addEventListener('click', function() {
+            soundEnabled = false;
+        });
 
-// --- Show News List ---
-async function updateNewsList() {
-  const listDiv = document.getElementById("realNewsList");
-  listDiv.innerHTML = "<b>✅ Fetching latest verified news...</b>";
-  listDiv.style.display = "block";
-  const latestNews = await fetchLatestNews();
-  if (latestNews.length > 0) {
-    listDiv.innerHTML =
-      "<b>✅ Verified 2025 News List:</b><br><ul>" +
-      latestNews
-        .map(
-          (n) =>
-            `<li><a href="${n.link}" target="_blank" rel="noopener">${escapeHTML(
-              n.title
-            )}</a></li>`
-        )
-        .join("") +
-      "</ul>";
-  } else {
-    listDiv.innerHTML = "<p>No latest news available at the moment.</p>";
-  }
-}
+        document.getElementById('backgroundSoundOn').addEventListener('click', function() {
+            backgroundMusicEnabled = true;
+            backgroundMusic.play().catch(e => console.log("Background music play failed:", e));
+        });
+        
+        document.getElementById('backgroundSoundOff').addEventListener('click', function() {
+            backgroundMusicEnabled = false;
+            backgroundMusic.pause();
+        });
 
-// --- Escape HTML ---
-function escapeHTML(str) {
-  if (!str) return "";
-  return str.replace(/[&<>"']/g, (m) =>
-    ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;",
-    }[m])
-  );
-}
-</script>
+        // Verification Popup Elements
+        const verificationPopup = document.getElementById('verificationPopup');
+        const closePopup = document.getElementById('closePopup');
+        const closeResultBtn = document.getElementById('closeResultBtn');
+        const learnMoreBtn = document.getElementById('learnMoreBtn');
+
+        // News Overview Elements
+        const newsOverview = document.getElementById('newsOverview');
+        const overviewResult = document.getElementById('overviewResult');
+        const overviewExplanation = document.getElementById('overviewExplanation');
+
+        // Close popup functionality
+        closePopup.addEventListener('click', function() {
+            verificationPopup.classList.remove('show');
+        });
+
+        closeResultBtn.addEventListener('click', function() {
+            verificationPopup.classList.remove('show');
+        });
+
+        learnMoreBtn.addEventListener('click', function() {
+            alert('Our AI analyzes multiple factors including source credibility, content patterns, factual accuracy, and potential bias to determine news authenticity. For more detailed information, visit our Educational Resources section.');
+        });
+
+        // Show news overview
+        function showNewsOverview(result, details) {
+            newsOverview.classList.remove('hidden');
+            
+            if (result === 'real') {
+                overviewResult.textContent = 'REAL NEWS';
+                overviewResult.className = 'overview-result real';
+                overviewExplanation.textContent = 'This news appears to be accurate and trustworthy based on our AI analysis.';
+            } else if (result === 'fake') {
+                overviewResult.textContent = 'FAKE NEWS';
+                overviewResult.className = 'overview-result fake';
+                overviewExplanation.textContent = 'This news contains misleading information. Do not trust this source.';
+            } else {
+                overviewResult.textContent = 'SUSPICIOUS CONTENT';
+                overviewResult.className = 'overview-result suspicious';
+                overviewExplanation.textContent = 'This content shows some questionable characteristics. Verify with additional sources.';
+            }
+            
+            // Scroll to overview
+            newsOverview.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Login/Signup functionality
+        document.getElementById('loginButton').addEventListener('click', function() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (email && password) {
+                if (soundEnabled) {
+                    successSound.play().catch(e => console.log("Success sound play failed:", e));
+                }
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('mainHeader').classList.remove('hidden');
+                document.getElementById('mainHero').classList.remove('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+                document.getElementById('mainFooter').classList.remove('hidden');
+            } else {
+                alert('Please enter both email and password');
+            }
+        });
+
+        document.getElementById('signupButton').addEventListener('click', function() {
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (fullName && email && password && confirmPassword) {
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match');
+                    return;
+                }
+                
+                if (soundEnabled) {
+                    successSound.play().catch(e => console.log("Success sound play failed:", e));
+                }
+                document.getElementById('signupModal').style.display = 'none';
+                document.getElementById('mainHeader').classList.remove('hidden');
+                document.getElementById('mainHero').classList.remove('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+                document.getElementById('mainFooter').classList.remove('hidden');
+            } else {
+                alert('Please fill all fields');
+            }
+        });
+
+        document.getElementById('showSignup').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('signupModal').style.display = 'flex';
+        });
+
+        document.getElementById('showLogin').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('signupModal').style.display = 'none';
+            document.getElementById('loginModal').style.display = 'flex';
+        });
+
+        document.getElementById('googleLogin').addEventListener('click', function() {
+            if (soundEnabled) {
+                clickSound.play().catch(e => console.log("Click sound play failed:", e));
+            }
+            // Simulate Google login
+            setTimeout(function() {
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('mainHeader').classList.remove('hidden');
+                document.getElementById('mainHero').classList.remove('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+                document.getElementById('mainFooter').classList.remove('hidden');
+            }, 1000);
+        });
+
+        document.getElementById('facebookLogin').addEventListener('click', function() {
+            if (soundEnabled) {
+                clickSound.play().catch(e => console.log("Click sound play failed:", e));
+            }
+            // Simulate Facebook login
+            setTimeout(function() {
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('mainHeader').classList.remove('hidden');
+                document.getElementById('mainHero').classList.remove('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+                document.getElementById('mainFooter').classList.remove('hidden');
+            }, 1000);
+        });
+
+        // Password strength indicator
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthBar = document.getElementById('passwordStrength');
+            
+            if (password.length === 0) {
+                strengthBar.className = 'password-strength';
+            } else if (password.length < 6) {
+                strengthBar.className = 'password-strength weak';
+            } else if (password.length < 10) {
+                strengthBar.className = 'password-strength medium';
+            } else {
+                strengthBar.className = 'password-strength strong';
+            }
+        });
+
+        document.getElementById('signupPassword').addEventListener('input', function() {
+            const password = this.value;
+            const strengthBar = document.getElementById('signupPasswordStrength');
+            
+            if (password.length === 0) {
+                strengthBar.className = 'password-strength';
+            } else if (password.length < 6) {
+                strengthBar.className = 'password-strength weak';
+            } else if (password.length < 10) {
+                strengthBar.className = 'password-strength medium';
+            } else {
+                strengthBar.className = 'password-strength strong';
+            }
+        });
+
+        // NEW FEATURES IMPLEMENTATION
+
+        // Article Submission Feature
+        document.getElementById('articleForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('articleTitle').value;
+            const category = document.getElementById('articleCategory').value;
+            const content = document.getElementById('articleContent').value;
+            const source = document.getElementById('articleSource').value;
+            const author = document.getElementById('articleAuthor').value;
+            const image = document.getElementById('articleImage').value;
+            
+            if (soundEnabled) {
+                clickSound.play().catch(e => console.log("Click sound play failed:", e));
+            }
+            
+            // Analyze the submitted article using DeepSeek AI
+            const analysis = await analyzeWithDeepSeek(title, content, source || 'User Submitted');
+            
+            // Show verification popup
+            showEnhancedVerificationPopup(analysis);
+            
+            // Create a new news card for the submitted article
+            const newsContainer = document.getElementById('newsContainer');
+            const newsCard = document.createElement('div');
+            newsCard.className = 'news-card';
+            newsCard.dataset.category = category;
+            
+            // Determine verification badge
+            let verificationBadge = '';
+            if (analysis.result === 'real') {
+                verificationBadge = '<div class="verification-badge verified-real"><i class="fas fa-check-circle"></i> AI Verified Real</div>';
+            } else if (analysis.result === 'fake') {
+                verificationBadge = '<div class="verification-badge verified-fake"><i class="fas fa-exclamation-triangle"></i> AI Detected Fake</div>';
+            } else {
+                verificationBadge = '<div class="verification-badge verification-pending"><i class="fas fa-hourglass-half"></i> AI Verification Pending</div>';
+            }
+            
+            // Use default image if none provided
+            const articleImage = image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80';
+            
+            newsCard.innerHTML = `
+                <img src="${articleImage}" alt="${title}" class="news-image">
+                ${verificationBadge}
+                <div class="news-content">
+                    <span class="news-category">${category.charAt(0).toUpperCase() + category.slice(1)}</span>
+                    <h3 class="news-title">${title}</h3>
+                    <p class="news-excerpt">${content.substring(0, 150)}...</p>
+                    <div class="news-meta">
+                        <span>Just now</span>
+                        <span>${author || 'Anonymous'}</span>
+                    </div>
+                </div>
+            `;
+            
+            // Add click event for news verification
+            newsCard.addEventListener('click', function() {
+                if (soundEnabled) {
+                    clickSound.play().catch(e => console.log("Click sound play failed:", e));
+                }
+                showEnhancedVerificationPopup(analysis);
+            });
+            
+            // Add to the beginning of the news container
+            newsContainer.prepend(newsCard);
+            
+            // Reset the form
+            document.getElementById('articleForm').reset();
+            
+            // Update stats
+            const articlesScanned = document.getElementById('articlesScanned');
+            articlesScanned.textContent = (parseInt(articlesScanned.textContent.replace(/,/g, '')) + 1).toLocaleString();
+            
+            if (analysis.result === 'fake') {
+                const fakeDetected = document.getElementById('fakeDetected');
+                fakeDetected.textContent = (parseInt(fakeDetected.textContent.replace(/,/g, '')) + 1).toLocaleString();
+            }
+        });
+
+        // Submit Article Button
+        document.getElementById('submitArticleBtn').addEventListener('click', function() {
+            if (soundEnabled) {
+                clickSound.play().catch(e => console.log("Click sound play failed:", e));
+            }
+            document.getElementById('articleSubmissionForm').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // URL Checker
+        document.getElementById('checkUrlButton').addEventListener('click', async function() {
+            const url = document.getElementById('urlInput').value.trim();
+            if (url) {
+                if (soundEnabled) {
+                    clickSound.play().catch(e => console.log("Click sound play failed:", e));
+                }
+                
+                // Use DeepSeek AI for URL analysis
+                const analysis = await analyzeWithDeepSeek('Website Analysis', 'Content from ' + url, url);
+                
+                showEnhancedVerificationPopup(analysis);
+                document.getElementById('urlInput').value = '';
+            } else {
+                alert('Please enter a URL to check');
+            }
+        });
+
+        // Fact-Checking Tools
+        document.getElementById('imageVerificationTool').addEventListener('click', function() {
+            if (soundEnabled) {
+                clickSound.play().catch(e => console.log("Click sound play failed:", e));
+            }
+            alert('🖼️ Image Verification Tool\n\nUpload an image to check if it has been manipulated or taken out of context. Our AI analyzes metadata and performs reverse image search.');
+        });
+
+        document.getElementById('deepfakeDetector').addEventListener('click', function() {
+            if (soundEnabled) {
+                clickSound.play().catch(e => console.log("Click sound play failed:", e));
+            }
+            alert('🎥 Deepfake Detection\n\nUpload a video to check for AI-generated content. Our system analyzes facial movements, audio synchronization, and digital artifacts.');
+        });
+
+        document.getElementById('sourceChecker').addEventListener('click', function() {
+            if (soundEnabled) {
+                clickSound.play().catch(e => console.log("Click sound play failed:", e));
+            }
+            alert('🌐 Source Analysis\n\nEnter a website URL or author name to evaluate credibility based on historical accuracy, bias, and fact-checking records.');
+        });
+
+        document.getElementById('biasDetector').addEventListener('click', function() {
+            if (soundEnabled) {
+                clickSound.play().catch(e => console.log("Click sound play failed:", e));
+            }
+            alert('⚖️ Bias Detection\n\nPaste article text to analyze political bias, sensationalism, and emotional manipulation in the content.');
+        });
+
+        // Animated Stats Counter
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                obj.innerHTML = value.toLocaleString();
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Simulate loading news data
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show loading spinner
+            const newsContainer = document.getElementById('newsContainer');
+            
+            // Animate stats after login
+            setTimeout(() => {
+                animateValue('articlesScanned', 0, 12847, 2000);
+                animateValue('fakeDetected', 0, 1243, 2000);
+                animateValue('activeUsers', 0, 8521, 2000);
+            }, 1500);
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                // Replace loading spinner with news cards
+                newsContainer.innerHTML = '';
+                
+                // Sample news data with more realistic examples
+                const newsData = [
+                    {
+                        id: 1,
+                        category: 'technology',
+                        title: 'AI Breakthrough Revolutionizes Healthcare Diagnostics',
+                        excerpt: 'New artificial intelligence system can detect diseases with 98% accuracy, transforming medical diagnosis according to research published in Nature.',
+                        image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                        date: '2 hours ago',
+                        source: 'BBC News',
+                        verification: 'real'
+                    },
+                    {
+                        id: 2,
+                        category: 'international',
+                        title: 'Global Climate Summit Reaches Historic Agreement',
+                        excerpt: 'World leaders unite on ambitious plan to reduce carbon emissions by 50% before 2030, according to official reports from the UN climate conference.',
+                        image: 'https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                        date: '5 hours ago',
+                        source: 'Reuters',
+                        verification: 'real'
+                    },
+                    {
+                        id: 3,
+                        category: 'sports',
+                        title: 'Underdog Team Wins Championship in Stunning Upset',
+                        excerpt: 'Against all odds, the underdog team clinches victory in the final seconds of the championship game, confirmed by official league sources.',
+                        image: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                        date: '1 day ago',
+                        source: 'ESPN',
+                        verification: 'real'
+                    },
+                    {
+                        id: 4,
+                        category: 'local',
+                        title: 'New Community Park Opens Downtown',
+                        excerpt: 'Residents celebrate the grand opening of the new 20-acre park featuring playgrounds and walking trails, according to city officials.',
+                        image: 'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                        date: '3 hours ago',
+                        source: 'Local Herald',
+                        verification: 'real'
+                    },
+                    {
+                        id: 5,
+                        category: 'national',
+                        title: 'SHOCKING: Government Announces SECRET Economic Plan!',
+                        excerpt: 'You WON\'T BELIEVE what the government is planning for the economy! This will change everything overnight! Click here to find out the secret!',
+                        image: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                        date: '7 hours ago',
+                        source: 'Unknown Blog',
+                        verification: 'fake'
+                    },
+                    {
+                        id: 6,
+                        category: 'entertainment',
+                        title: 'Award-Winning Film Director Announces New Project',
+                        excerpt: 'The acclaimed filmmaker reveals details about an upcoming sci-fi epic with an all-star cast, according to studio representatives.',
+                        image: 'https://images.unsplash.com/photo-1489599809505-7c8e1c8bfc15?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                        date: '1 day ago',
+                        source: 'Variety',
+                        verification: 'real'
+                    },
+                    {
+                        id: 7,
+                        category: 'health',
+                        title: 'MIRACLE Cure Discovered for Common Cold!',
+                        excerpt: 'Scientists have found an INSTANT remedy that eliminates cold symptoms overnight. Big Pharma is trying to HIDE this secret cure from you!',
+                        image: 'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                        date: '4 hours ago',
+                        source: 'Unverified Health Blog',
+                        verification: 'fake'
+                    },
+                    {
+                        id: 8,
+                        category: 'technology',
+                        title: 'New Smartphone Battery Lasts 30 Days on Single Charge',
+                        excerpt: 'Groundbreaking battery technology promises to revolutionize mobile devices with unprecedented battery life, according to research published in Science Journal.',
+                        image: 'https://images.unsplash.com/photo-1565849904461-04a58ad377e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                        date: '6 hours ago',
+                        source: 'Tech Insider',
+                        verification: 'real'
+                    }
+                ];
+                
+                // Generate news cards
+                newsData.forEach(news => {
+                    const newsCard = document.createElement('div');
+                    newsCard.className = 'news-card';
+                    newsCard.dataset.category = news.category;
+                    
+                    // Determine verification badge
+                    let verificationBadge = '';
+                    if (news.verification === 'real') {
+                        verificationBadge = '<div class="verification-badge verified-real"><i class="fas fa-check-circle"></i> Verified Real</div>';
+                    } else if (news.verification === 'fake') {
+                        verificationBadge = '<div class="verification-badge verified-fake"><i class="fas fa-exclamation-triangle"></i> Likely Fake</div>';
+                    } else {
+                        verificationBadge = '<div class="verification-badge verification-pending"><i class="fas fa-hourglass-half"></i> Verification Pending</div>';
+                    }
+                    
+                    newsCard.innerHTML = `
+                        <img src="${news.image}" alt="${news.title}" class="news-image">
+                        ${verificationBadge}
+                        <div class="news-content">
+                            <span class="news-category">${news.category.charAt(0).toUpperCase() + news.category.slice(1)}</span>
+                            <h3 class="news-title">${news.title}</h3>
+                            <p class="news-excerpt">${news.excerpt}</p>
+                            <div class="news-meta">
+                                <span>${news.date}</span>
+                                <span>${news.source}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add click event for news verification
+                    newsCard.addEventListener('click', async function() {
+                        if (soundEnabled) {
+                            clickSound.play().catch(e => console.log("Click sound play failed:", e));
+                        }
+                        
+                        // Use DeepSeek AI for analysis
+                        const analysis = await analyzeWithDeepSeek(news.title, news.excerpt, news.source);
+                        
+                        // Show verification popup
+                        showEnhancedVerificationPopup(analysis);
+                    });
+                    
+                    newsContainer.appendChild(newsCard);
+                });
+            }, 1500); // Simulate 1.5 second loading time
+            
+            // Category button functionality
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (soundEnabled) {
+                        clickSound.play().catch(e => console.log("Click sound play failed:", e));
+                    }
+                    
+                    // Remove active class from all buttons
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const category = this.dataset.category;
+                    
+                    // Filter news by category
+                    const newsCards = document.querySelectorAll('.news-card');
+                    newsCards.forEach(card => {
+                        if (category === 'all' || card.dataset.category === category) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            
+            searchButton.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            async function performSearch() {
+                if (soundEnabled) {
+                    clickSound.play().catch(e => console.log("Click sound play failed:", e));
+                }
+                const query = searchInput.value.trim();
+                if (query) {
+                    // Use DeepSeek AI for search
+                    const analysis = await analyzeWithDeepSeek(query, "User searched for this content", "Search Query");
+                    
+                    // Show verification popup
+                    showEnhancedVerificationPopup(analysis);
+                    
+                    searchInput.value = '';
+                }
+            }
+            
+            // Demo button functionality
+            document.getElementById('demoButton').addEventListener('click', async function() {
+                if (soundEnabled) {
+                    clickSound.play().catch(e => console.log("Click sound play failed:", e));
+                }
+                
+                // Test cases for DeepSeek AI
+                const testCases = [
+                    {
+                        title: "BREAKING: Scientists discover MIRACLE weight loss pill!",
+                        content: "This incredible discovery is being SUPPRESSED by big pharma! Click here to learn the SECRET! This will change EVERYTHING overnight! You won't believe what happens next!",
+                        source: "Health Conspiracy Blog"
+                    },
+                    {
+                        title: "New Study Shows Benefits of Mediterranean Diet",
+                        content: "According to research published in the Journal of Nutrition, the Mediterranean diet reduces heart disease risk by 30%. The study followed 10,000 participants over 5 years and was peer-reviewed by experts in the field.",
+                        source: "Harvard Health Publishing"
+                    }
+                ];
+                
+                // Test both cases with DeepSeek AI
+                const fakeAnalysis = await analyzeWithDeepSeek(testCases[0].title, testCases[0].content, testCases[0].source);
+                const realAnalysis = await analyzeWithDeepSeek(testCases[1].title, testCases[1].content, testCases[1].source);
+                
+                // Show fake news popup first
+                showEnhancedVerificationPopup(fakeAnalysis);
+                
+                // Show real news popup after a delay
+                setTimeout(() => {
+                    showEnhancedVerificationPopup(realAnalysis);
+                }, 5000);
+            });
+            
+            // Subscribe button functionality
+            document.getElementById('subscribeButton').addEventListener('click', function() {
+                if (soundEnabled) {
+                    successSound.play().catch(e => console.log("Success sound play failed:", e));
+                }
+                const email = document.getElementById('emailInput').value.trim();
+                if (email) {
+                    alert(`Thank you for subscribing with: ${email}\nYou'll receive verified news alerts daily.`);
+                    document.getElementById('emailInput').value = '';
+                } else {
+                    alert('Please enter a valid email address');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
